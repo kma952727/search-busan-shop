@@ -35,3 +35,4 @@ build/
 ### 추가내용 ###
 .DS_Store
 *.yml
+*.xml
