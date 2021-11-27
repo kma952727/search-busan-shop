@@ -1,12 +1,10 @@
 package com.example.searchbusanshopapi.infra.exception.handler;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.example.searchbusanshopapi.infra.exception.ExceptionResponse;
-import com.example.searchbusanshopapi.infra.exception.FailAuthenticationException;
-import com.example.searchbusanshopapi.infra.exception.RegistedUsernameException;
-import com.example.searchbusanshopapi.infra.exception.UserNotFoundException;
+import com.example.searchbusanshopapi.infra.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,6 +70,16 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
                         .statusDetail(ex.getErrorcode().toString())
                         .requestDetail(request.toString()).build();
 
+        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(InvalidTokenException.class)
+    public final ResponseEntity handleAccessDeniedException(InvalidTokenException ex, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                ExceptionResponse.builder().timestamp(new Date())
+                        .message(String.format("토큰이 올바르지 않습니다. 확인해주세요."))
+                        .statusDetail(ex.getErrorcode().toString())
+                        .requestDetail(request.toString()).build();
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }

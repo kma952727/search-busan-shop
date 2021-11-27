@@ -24,9 +24,7 @@ public class JwtService {
     }
 
     //토큰검증
-    public String verifyToken(HttpServletRequest request) {
-
-        String token =  request.getHeader("Authorization").replace("Bearer ", "");
+    public String verifyToken(String token) {
 
         String username = JWT.require(Algorithm.HMAC256(SECRET_KEK))
                 .build()

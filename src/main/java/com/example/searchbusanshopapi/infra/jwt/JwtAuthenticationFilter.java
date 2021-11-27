@@ -8,6 +8,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -52,8 +53,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
 
-        System.out.println("성공!");
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
+        SecurityContextHolder.getContext().setAuthentication(authResult);
         String username = userDetails.getUsername();
         //jwt토큰생성
         String jwtToken = jwtService.createToken(username);
@@ -62,6 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        System.out.println("인증실패!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         response.sendRedirect("/jwt/authentication?username="+username);
     }
 
