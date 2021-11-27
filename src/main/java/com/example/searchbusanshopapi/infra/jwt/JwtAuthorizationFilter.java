@@ -1,5 +1,8 @@
 package com.example.searchbusanshopapi.infra.jwt;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.searchbusanshopapi.infra.auth.CustomUserDetails;
 import com.example.searchbusanshopapi.user.model.User;
 import com.example.searchbusanshopapi.user.repository.UserRepository;
@@ -32,18 +35,20 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
+
         //회원가입url로 접근시 토큰값확인을 막기위해
-        if(request.getServletPath().equals("/users")){
-            response.addHeader("why", "123123");
-            chain.doFilter(request, response);
-            return;
-        }
+//        if(request.getServletPath().equals("/users")){
+//            chain.doFilter(request, response);
+//            return;
+//        }
 
         //헤더에서 토큰 분리
         String jwtHeader = request.getHeader("Authorization");
 
         if (jwtHeader == null || !jwtHeader.startsWith("Bearer")) {
-            response.addHeader("why", "123123");
+            response.addHeader("token", jwtHeader);
+            response.addHeader("success", "false");
+            response.addHeader("cause", "토큰을 찾지못하였습니다.");
             chain.doFilter(request, response);
             return;
         }
@@ -52,10 +57,20 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String username = null;
         try {
             username = jwtService.verifyToken(jwtHeader);
-        }catch (Exception e){
+        }catch (TokenExpiredException e){
             e.printStackTrace();
-            response.addHeader("why", "123123");
-            //request.setAttribute("exception", "code1");
+            response.addHeader("token", jwtHeader);
+            response.addHeader("success", "false");
+            response.addHeader("cause", "토큰의 수명이 다했습니다.");
+            chain.doFilter(request, response);
+            return;
+        }catch (SignatureVerificationException e){
+            e.printStackTrace();
+            response.addHeader("token", jwtHeader);
+            response.addHeader("success", "false");
+            response.addHeader("cause", "토큰은 존재하나 올바르지 않습니다.");
+            chain.doFilter(request, response);
+            return;
         }
 
         User userEntity = userRepository.findByUsername(username);

@@ -77,9 +77,9 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
 
         ExceptionResponse exceptionResponse =
                 ExceptionResponse.builder().timestamp(new Date())
-                        .message(String.format("토큰이 올바르지 않습니다. 확인해주세요."))
+                        .message(String.format(ex.getMessage()))
                         .statusDetail(ex.getErrorcode().toString())
-                        .requestDetail(request.toString()).build();
+                        .requestDetail(request.toString() + "/ 토큰값 : "+ex.getToken()).build();
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }

@@ -6,9 +6,13 @@ import lombok.Getter;
 public class InvalidTokenException extends RuntimeException{
 
     Errorcode errorcode;
+    String message;
+    String token;
 
-    public InvalidTokenException(Errorcode errorcode){
+    public InvalidTokenException(Errorcode errorcode, String message,String token){
         super();
         this.errorcode = errorcode;
+        this.message = message;
+        this.token = token;
     }
 }

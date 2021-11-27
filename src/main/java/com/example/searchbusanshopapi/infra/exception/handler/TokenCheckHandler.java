@@ -1,5 +1,6 @@
 package com.example.searchbusanshopapi.infra.exception.handler;
 
+import antlr.Token;
 import com.example.searchbusanshopapi.infra.exception.Errorcode;
 import com.example.searchbusanshopapi.infra.exception.InvalidTokenException;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -12,16 +13,34 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class TokenCheckHandler implements HandlerInterceptor {
 
+    private Set blackFilter = new HashSet();
+
+    public TokenCheckHandler() {
+        blackFilter.add("/users");
+        blackFilter.add("/jwt/authentication");
+    }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println(response.getHeader("why"));
-        if(!request.getServletPath().equals("/users")) {
-            throw new InvalidTokenException(Errorcode.INVALID_TOKEN);
+
+        if(response.getHeader("success") == null){
+            return true;
         }
-        return true;
+
+        if(blackFilter.contains(request.getServletPath())){
+            return true;
+        }
+
+        String token = response.getHeader("token");
+        if(token == null) {
+            token = "토큰이 존재하지 않습니다.";
+        }
+        throw new InvalidTokenException(Errorcode.INVALID_TOKEN, response.getHeader("cause"), token);
+
     }
 }
