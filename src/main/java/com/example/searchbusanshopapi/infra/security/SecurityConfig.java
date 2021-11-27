@@ -1,15 +1,19 @@
 package com.example.searchbusanshopapi.infra.security;
 
+import com.example.searchbusanshopapi.api.ShopConfig;
 import com.example.searchbusanshopapi.infra.jwt.JwtAuthenticationFilter;
 import com.example.searchbusanshopapi.infra.jwt.JwtAuthorizationFilter;
 import com.example.searchbusanshopapi.infra.jwt.JwtService;
 import com.example.searchbusanshopapi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -38,4 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/shops")
                 .access("hasRole('ROLE_USER')");
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
 }

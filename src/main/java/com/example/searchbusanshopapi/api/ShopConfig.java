@@ -1,30 +1,43 @@
 package com.example.searchbusanshopapi.api;
 
 import com.example.searchbusanshopapi.shop.dto.ShopDTO;
+import lombok.Data;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.support.PropertySourceFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-@Component
+@Configuration
 public class ShopConfig {
 
-    @Value("${api.base-url}")
-    private String BASE_URL;
-    @Value("${api.secret-key}")
-    private String SECRET_KEY;
+    @Value("${external.service-key}")
+    public String SERVICE_KEY;
+
+    private String BASE_URL = "http://apis.data.go.kr/6260000/GoodPriceStoreService/getGoodPriceStore?";
 
     private URL url = null;
     private HttpURLConnection conn = null;
     private BufferedReader rd = null;
-    private StringBuilder urlBuilder =new StringBuilder(BASE_URL + "serviceKey=" + SECRET_KEY + "&pageNo=1&numOfRows=5&resultType=json");
+    private StringBuilder urlBuilder;
 
+    @PostConstruct
+    public void init(){
+        urlBuilder = new StringBuilder(BASE_URL + "serviceKey=" + SERVICE_KEY + "&pageNo=1&numOfRows=5&resultType=json");
+    }
 
     /**
      * 읽기전용, 부산가게리스트api에 요청을 보냅니다.
@@ -33,7 +46,6 @@ public class ShopConfig {
      * @throws Exception ioexception인걸로 예상, 추후 리팩토링 예정
      */
     public JSONObject request(ShopDTO shopDTO) throws Exception{
-
         String appendUrl = urlBuild(shopDTO).toString();
         urlBuilder.append(appendUrl);
         connect(urlBuilder);

@@ -11,12 +11,10 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret-key}")
+    @Value("${external.jwt.secret-key}")
     private String SECRET_KEK;
-
     //토큰 생성
     public String createToken(String username){
-
         String jwtToken = JWT.create()
                 .withSubject("required-token")
                 .withExpiresAt(new Date(System.currentTimeMillis() + 60000 * 10))
