@@ -82,4 +82,16 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
                         .requestDetail(request.toString() + "/ 토큰값 : "+ex.getToken()).build();
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DataNotFoundInDatabaseException.class)
+    public final ResponseEntity handleNoDataInDatabase(DataNotFoundInDatabaseException ex,
+                                                       WebRequest request){
+        ExceptionResponse exceptionResponse =
+                ExceptionResponse.builder().timestamp(new Date())
+                        .message("데이터베이스내에서 해당 값들을 찾을수없습니다")
+                        .statusDetail(ex.getErrorcode().toString())
+                        .requestDetail(request.toString() + "\n / "+ex.getTargetData()).build();
+        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+
+    }
 }

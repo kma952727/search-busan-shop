@@ -12,6 +12,6 @@ public class LoginExceptionController {
 
     @GetMapping("/jwt/authentication")
     public void noAuthentication(@RequestParam String username){
-        throw new FailAuthenticationException(Errorcode.NO_MATCHING_AUTHENTICATION_DATABASE, username);
+        throw new FailAuthenticationException(Errorcode.NO_MATCHING_AUTHENTICATION_IN_DB, username);
     }
 }
