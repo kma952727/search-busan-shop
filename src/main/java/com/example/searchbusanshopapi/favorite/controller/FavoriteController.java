@@ -24,13 +24,7 @@ import java.util.Set;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
-    private final UserService userService;
 
-    @GetMapping("/favorites")
-    public ResponseEntity<Object> findFavorite(){
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
     /**
      * 요청형태 ex) [1, 2, 3, ...]
      * @param usersId
@@ -39,12 +33,7 @@ public class FavoriteController {
      */
     @DeleteMapping("/users/{usersId}/favorites")
     public ResponseEntity deleteFavorite(@Validated @PathVariable @Positive Long usersId,
-                                         @RequestBody(required = false) @Validated @NotNull Set<Long> favoriteIdSet,
-                                         BindingResult bindingResult){
-        //수정중
-        if(bindingResult.hasErrors()){
-            System.out.println("에러 "+ bindingResult.getAllErrors());
-        }
+                                         @RequestBody(required = false) @Validated @NotNull Set<Long> favoriteIdSet){
 
         try {
             favoriteService.deleteFavorite(usersId, favoriteIdSet);
@@ -65,9 +54,11 @@ public class FavoriteController {
      * @throws Exception
      */
     @PostMapping("/users/{userId}/favorites")
-    public ResponseEntity saveFavorite(@RequestBody ShopDTO shopDTO, @PathVariable Long userId) throws Exception{
+    public ResponseEntity saveFavorite(@RequestBody(required = false) ShopDTO shopDTO,
+                                       @Validated @PathVariable @Positive Long userId) throws Exception{
+
         try {
-            userService.save(shopDTO, userId);
+            favoriteService.save(shopDTO, userId);
         }catch (Exception e){
             throw new Exception("넌 저장실패했어, 난 컨트롤러에서 나왔어");
         }

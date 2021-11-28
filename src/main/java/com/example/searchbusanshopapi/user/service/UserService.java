@@ -64,43 +64,6 @@ public class UserService {
 
     }
 
-    public void save(ShopDTO shopDTO, Long userId) throws Exception{
-        JSONObject jsonObject = shopConfig.request(shopDTO, 1);
-        List<Favorite> favorites = jsonRestaurantToFavorites(jsonObject);
-        User user = userRepository.findById(userId).get();
-        if(user == null){
-            throw new Exception("넌 아이디가 없어! 난 서비스단이야");
-        }
-        user.getFavorites().addAll(favorites);
-        userRepository.save(user);
-    }
-
-    /**
-     * jsonObject타입의 가게리스트를 List<Favorite>타입의 자바 오브젝트로 바꿔줍니다. //vo객체로 이동필요
-     * @param jsonObject 원래형태
-     * @return 자바오브젝트로 변환
-     */
-    private List<Favorite> jsonRestaurantToFavorites(JSONObject jsonObject){
-        JSONObject jsonMap =(JSONObject)jsonObject.get("getGoodPriceStore");
-        JSONArray jsonList = (JSONArray)jsonMap.get("item");
-
-        List<Favorite> favorites = new ArrayList<>();
-        Favorite favorite = null;
-
-        for(Object element : jsonList) {
-            HashMap<String, String> restaurntFiled = (HashMap<String, String>)element;
-            favorite = new Favorite.FavoriteBuilder()
-                    .setOwner(restaurntFiled.get("mNm"))
-                    .setCategori(restaurntFiled.get("cn"))
-                    .setLocale(restaurntFiled.get("locale"))
-                    .setOwner(restaurntFiled.get("mNm"))
-                    .setShopName(restaurntFiled.get("sj"))
-                    .setImg(restaurntFiled.get("imgFile1"))
-                    .build();
-            favorites.add(favorite);
-        }
-        return favorites;
-    }
 
     /**
      * 유저 업데이트
