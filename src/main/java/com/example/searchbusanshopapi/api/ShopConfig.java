@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PropertySourceFactory;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class ShopConfig {
 
     @PostConstruct
     public void init(){
-        urlBuilder = new StringBuilder(BASE_URL + "serviceKey=" + SERVICE_KEY + "&pageNo=1&numOfRows=5&resultType=json");
+        urlBuilder = new StringBuilder(BASE_URL + "serviceKey=" + SERVICE_KEY + "&numOfRows=5&resultType=json");
     }
 
     /**
@@ -45,10 +46,11 @@ public class ShopConfig {
      * @return 응답받은 가게리스트
      * @throws Exception ioexception인걸로 예상, 추후 리팩토링 예정
      */
-    public JSONObject request(ShopDTO shopDTO) throws Exception{
-        String appendUrl = urlBuild(shopDTO).toString();
+    public JSONObject request(ShopDTO shopDTO, Integer pageNum) throws Exception{
+        String appendUrl = urlBuild(shopDTO, pageNum).toString();
         urlBuilder.append(appendUrl);
         connect(urlBuilder);
+        urlBuilder.delete(208, urlBuilder.length());
 
         if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -64,6 +66,7 @@ public class ShopConfig {
         closed();
         JSONParser parser = new JSONParser();
         JSONObject obj = (JSONObject)parser.parse(sb.toString());
+        sb = null;
         return obj;
     }
 
@@ -72,8 +75,15 @@ public class ShopConfig {
      * @param shopDTO 클라이언트가 보낸 검색옵션
      * @return 요청보낼 Url
      */
-    private StringBuilder urlBuild(ShopDTO shopDTO) {
+    private StringBuilder urlBuild(ShopDTO shopDTO, Integer pageNum) {
         StringBuilder sb = new StringBuilder();
+
+        if(pageNum >= 1) {
+            sb.append("&pageNo="+pageNum);
+        }
+        if(shopDTO == null) {
+            return sb;
+        }
         if(shopDTO.getShopName() != null){
             sb.append("&sj="+shopDTO.getShopName());
         }
@@ -105,6 +115,7 @@ public class ShopConfig {
      */
     private void closed(){
         try {
+
             rd.close();
         } catch (IOException e) {
             e.printStackTrace();

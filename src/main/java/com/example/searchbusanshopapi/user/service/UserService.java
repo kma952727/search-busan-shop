@@ -65,7 +65,7 @@ public class UserService {
     }
 
     public void save(ShopDTO shopDTO, Long userId) throws Exception{
-        JSONObject jsonObject = shopConfig.request(shopDTO);
+        JSONObject jsonObject = shopConfig.request(shopDTO, 1);
         List<Favorite> favorites = jsonRestaurantToFavorites(jsonObject);
         User user = userRepository.findById(userId).get();
         if(user == null){
