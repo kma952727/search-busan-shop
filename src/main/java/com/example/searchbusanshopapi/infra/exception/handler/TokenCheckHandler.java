@@ -22,8 +22,9 @@ public class TokenCheckHandler implements HandlerInterceptor {
     private Set blackFilter = new HashSet();
 
     public TokenCheckHandler() {
-        blackFilter.add("/users");
-        blackFilter.add("/jwt/authentication");
+        blackFilter.add("/users"); // 회원가입 url
+        blackFilter.add("/jwt/authentication"); // 로그인 url
+        blackFilter.add("/v3/api-docs"); //swagger url
     }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -31,7 +32,7 @@ public class TokenCheckHandler implements HandlerInterceptor {
         if(response.getHeader("success") == null){
             return true;
         }
-
+        System.out.println(request.getServletPath()+ "   ***");
         if(blackFilter.contains(request.getServletPath())){
             return true;
         }

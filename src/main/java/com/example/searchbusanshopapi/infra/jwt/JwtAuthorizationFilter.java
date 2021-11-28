@@ -67,6 +67,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         User userEntity = userRepository.findByUsername(username);
+        if(userEntity == null ){
+            response.addHeader("token", jwtHeader);
+            response.addHeader("success", "false");
+            response.addHeader("cause", "토큰은 존재하나 올바르지 않습니다.");
+            chain.doFilter(request, response);
+            return;
+        }
         CustomUserDetails userDetails =
                 new CustomUserDetails(userEntity);
         Authentication authentication =
