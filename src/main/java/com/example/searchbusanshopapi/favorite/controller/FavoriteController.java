@@ -59,8 +59,9 @@ public class FavoriteController {
 
         try {
             favoriteService.save(shopDTO, userId);
-        }catch (Exception e){
-            throw new Exception("넌 저장실패했어, 난 컨트롤러에서 나왔어");
+        }catch (UserNotFoundException e){
+            e.printStackTrace();
+            throw e;
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }

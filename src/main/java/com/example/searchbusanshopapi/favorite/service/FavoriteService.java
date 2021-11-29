@@ -4,6 +4,7 @@ import com.example.searchbusanshopapi.api.ShopConfig;
 import com.example.searchbusanshopapi.favorite.model.Favorite;
 import com.example.searchbusanshopapi.infra.exception.DataNotFoundInDatabaseException;
 import com.example.searchbusanshopapi.infra.exception.Errorcode;
+import com.example.searchbusanshopapi.infra.exception.UserNotFoundException;
 import com.example.searchbusanshopapi.shop.dto.ShopDTO;
 import com.example.searchbusanshopapi.user.model.User;
 import com.example.searchbusanshopapi.user.repository.UserRepository;
@@ -27,7 +28,7 @@ public class FavoriteService {
         List<Favorite> favorites = jsonRestaurantToFavorites(jsonObject);
         User user = userRepository.findById(userId).get();
         if(user == null){
-            throw new Exception("넌 아이디가 없어! 난 서비스단이야");
+            throw new UserNotFoundException(Errorcode.USER_NOT_FOUND_IN_DB, userId);
         }
         user.getFavorites().addAll(favorites);
         userRepository.save(user);
