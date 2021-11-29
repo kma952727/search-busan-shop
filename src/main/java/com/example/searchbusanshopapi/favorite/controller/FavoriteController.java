@@ -1,5 +1,7 @@
 package com.example.searchbusanshopapi.favorite.controller;
 
+import com.example.searchbusanshopapi.favorite.model.Favorite;
+import com.example.searchbusanshopapi.favorite.model.FavoriteDTO;
 import com.example.searchbusanshopapi.favorite.service.FavoriteService;
 import com.example.searchbusanshopapi.infra.exception.DataNotFoundInDatabaseException;
 import com.example.searchbusanshopapi.infra.exception.Errorcode;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -48,17 +51,17 @@ public class FavoriteController {
 
     /**
      * body에서 json객체를 가져와 favorite객체에 맵핑한 user를 insert합니다.
-     * @param shopDTO
+     * @param
      * @param userId
      * @return
      * @throws Exception
      */
     @PostMapping("/users/{userId}/favorites")
-    public ResponseEntity saveFavorite(@RequestBody(required = false) ShopDTO shopDTO,
+    public ResponseEntity saveFavorite(@RequestBody(required = false) List<FavoriteDTO> favoritesDTO,
                                        @Validated @PathVariable @Positive Long userId) throws Exception{
 
         try {
-            favoriteService.save(shopDTO, userId);
+            favoriteService.save(favoritesDTO, userId);
         }catch (UserNotFoundException e){
             e.printStackTrace();
             throw e;

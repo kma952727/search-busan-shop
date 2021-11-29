@@ -4,12 +4,14 @@ import com.example.searchbusanshopapi.user.model.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Table(name = "favorite")
 @Getter
 @Setter
+@ToString
 @Entity
 public class Favorite {
 
@@ -28,6 +30,10 @@ public class Favorite {
     private String categori; //가게분류
     @Column(name = "img")
     private String img; //가게이미지
+    private String introduce;
+    private String phoneNumber;
+    private Long shopId;
+
 
     @JsonBackReference//순환참조 방어
     @ManyToOne()
@@ -41,6 +47,9 @@ public class Favorite {
         private String locale;
         private String categori;
         private String img;
+        private String introduce;
+        private String phoneNumber;
+        private Long shopId;
 
         public FavoriteBuilder setOwner(String owner){
             this.owner = owner;
@@ -66,7 +75,18 @@ public class Favorite {
             this.img = img;
             return this;
         }
-
+        public FavoriteBuilder setIntroduce(String introduce) {
+            this.introduce = introduce;
+            return this;
+        }
+        public FavoriteBuilder setPhoneNumber(String phoneNumber){
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+        public FavoriteBuilder setShopId(Long shopId){
+            this.shopId = shopId;
+            return this;
+        }
         public Favorite build(){
             Favorite favorite = new Favorite();
             favorite.setOwner(this.owner);
@@ -74,6 +94,9 @@ public class Favorite {
             favorite.setLocale(this.locale);
             favorite.setCategori(this.categori);
             favorite.setImg(this.img);
+            favorite.setIntroduce(this.introduce);
+            favorite.setPhoneNumber(this.phoneNumber);
+            favorite.setShopId(this.shopId);
             return favorite;
         }
     }
