@@ -4,11 +4,13 @@ import com.example.searchbusanshopapi.favorite.model.Favorite;
 import com.example.searchbusanshopapi.favorite.model.FavoriteDTO;
 import com.example.searchbusanshopapi.favorite.service.FavoriteService;
 import com.example.searchbusanshopapi.infra.exception.DataNotFoundInDatabaseException;
+import com.example.searchbusanshopapi.infra.exception.DuplicatedKeyException;
 import com.example.searchbusanshopapi.infra.exception.Errorcode;
 import com.example.searchbusanshopapi.infra.exception.UserNotFoundException;
 import com.example.searchbusanshopapi.shop.dto.ShopDTO;
 import com.example.searchbusanshopapi.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -63,6 +66,9 @@ public class FavoriteController {
         try {
             favoriteService.save(favoritesDTO, userId);
         }catch (UserNotFoundException e){
+            e.printStackTrace();
+            throw e;
+        }catch (DuplicatedKeyException e){
             e.printStackTrace();
             throw e;
         }

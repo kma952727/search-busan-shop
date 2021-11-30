@@ -2,6 +2,7 @@ package com.example.searchbusanshopapi.infra.exception.handler;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.example.searchbusanshopapi.infra.exception.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 
 @RestController
@@ -90,8 +92,16 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
                 ExceptionResponse.builder().timestamp(new Date())
                         .message("데이터베이스내에서 해당 값들을 찾을수없습니다")
                         .statusDetail(ex.getErrorcode().toString())
-                        .requestDetail(request.toString() + "\n / "+ex.getTargetData()).build();
+                        .requestDetail(request.toString() + " / "+ex.getTargetData()).build();
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
-
+    }
+    @ExceptionHandler(DuplicatedKeyException.class)
+    public final ResponseEntity handleDuplicateKey(DuplicatedKeyException ex, WebRequest request){
+        ExceptionResponse exceptionResponse =
+        ExceptionResponse.builder().timestamp(new Date())
+                .message("디비내에 이미 값이 있습니다.(유니크키)")
+                .statusDetail(ex.getErrorcode().toString())
+                .requestDetail(request.toString() + "/ " + ex.getDuplicateMessage()).build();
+        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }

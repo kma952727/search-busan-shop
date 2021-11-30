@@ -32,6 +32,7 @@ public class Favorite {
     private String img; //가게이미지
     private String introduce;
     private String phoneNumber;
+    @Column(unique = true)
     private Long shopId;
 
 

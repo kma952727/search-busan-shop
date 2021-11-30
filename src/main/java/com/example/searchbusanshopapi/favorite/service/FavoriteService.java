@@ -5,6 +5,7 @@ import com.example.searchbusanshopapi.favorite.model.Favorite;
 import com.example.searchbusanshopapi.favorite.model.FavoriteDTO;
 import com.example.searchbusanshopapi.infra.config.ConvertConfig;
 import com.example.searchbusanshopapi.infra.exception.DataNotFoundInDatabaseException;
+import com.example.searchbusanshopapi.infra.exception.DuplicatedKeyException;
 import com.example.searchbusanshopapi.infra.exception.Errorcode;
 import com.example.searchbusanshopapi.infra.exception.UserNotFoundException;
 import com.example.searchbusanshopapi.shop.dto.ShopDTO;
@@ -16,9 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 
 @Service
@@ -40,8 +44,9 @@ public class FavoriteService {
         }catch (NoSuchElementException e) {
             e.printStackTrace();
             throw new UserNotFoundException(Errorcode.USER_NOT_FOUND_IN_DB, userId);
-        }catch (Exception e) {
+        }catch (DataIntegrityViolationException e) {
             e.printStackTrace();
+            throw new DuplicatedKeyException(e.getRootCause().getMessage(), Errorcode.DUPLICATED_KEY_IN_DB);
         }
     }
 
