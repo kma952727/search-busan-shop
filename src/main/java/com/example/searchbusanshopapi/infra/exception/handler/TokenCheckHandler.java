@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 토큰체크결과를 예외처리로직에 넣을지 결정
+ * blackFilter에 넣은 문자열은 로직에서 제외한다.
+ */
 @Component
 public class TokenCheckHandler implements HandlerInterceptor {
 
