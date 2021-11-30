@@ -7,6 +7,7 @@ import com.example.searchbusanshopapi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -36,10 +37,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, jwtService));
         http
                 .authorizeRequests()
-                .antMatchers("/users", "/", "/swagger*/**")
+                .antMatchers("/users", "/login")
                 .permitAll()
-                .antMatchers("/shops")
-                .access("hasRole('ROLE_USER')");
+                .antMatchers("/", "/swagger*/**")
+                .permitAll()
+                .anyRequest().authenticated();
     }
 
     @Bean

@@ -3,7 +3,11 @@ package com.example.searchbusanshopapi.infra.jwt;
 import com.example.searchbusanshopapi.infra.auth.CustomUserDetails;
 import com.example.searchbusanshopapi.user.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,7 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -32,6 +36,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
         User user = null;
+
         try {
             ObjectMapper om = new ObjectMapper();
             user = om.readValue(request.getInputStream(), User.class);
@@ -43,11 +48,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             return authentication;
         }catch (IOException e) {
             e.printStackTrace();
+            Authentication falseLogin = new UsernamePasswordAuthenticationToken("", "", null);
+            Authentication authentication = authenticationManager.authenticate(falseLogin);
+            return authentication;
         }catch (InternalAuthenticationServiceException e){
             e.printStackTrace();
             throw e;
         }
-        return null;
     }
 
     @Override
@@ -65,5 +72,4 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         response.sendRedirect("/jwt/authentication?username="+username);
     }
-
 }

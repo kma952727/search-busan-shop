@@ -6,11 +6,9 @@ import lombok.Getter;
 public class FailAuthenticationException extends RuntimeException {
 
     private Errorcode errorcode;
-    private String username;
 
-    public FailAuthenticationException(Errorcode errorCode, String username) {
+    public FailAuthenticationException(Errorcode errorCode) {
         super();
         this.errorcode = errorCode;
-        this.username = username;
     }
 }

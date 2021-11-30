@@ -68,7 +68,7 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
 
         ExceptionResponse exceptionResponse =
                 ExceptionResponse.builder().timestamp(new Date())
-                        .message(String.format("%s의 인증이 이상합니다.", ex.getUsername()))
+                        .message(String.format("로그인을 다시 진행해주세요."))
                         .statusDetail(ex.getErrorcode().toString())
                         .requestDetail(request.toString()).build();
 

@@ -35,6 +35,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
+        if(request.getServletPath().equals("/jwt/authentication")){
+            Authentication authentication
+                    = new UsernamePasswordAuthenticationToken(null, null, null);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            chain.doFilter(request, response);
+            return;
+        }
+
         //헤더에서 토큰 분리
         String jwtHeader = request.getHeader("Authorization");
 

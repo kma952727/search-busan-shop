@@ -32,7 +32,7 @@ public class TokenCheckHandler implements HandlerInterceptor {
         if(response.getHeader("success") == null){
             return true;
         }
-        System.out.println(request.getServletPath()+ "   ***");
+        System.out.println("접근 경로 : " + request.getServletPath());
         if(blackFilter.contains(request.getServletPath())){
             return true;
         }
