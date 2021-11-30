@@ -10,9 +10,7 @@ import com.example.searchbusanshopapi.user.repository.RefreshRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,4 +57,11 @@ public class LoginExceptionController {
 
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity logout(HttpServletRequest request) {
+        String[] verifyResult = jwtService.verifyRefreshToken(request.getHeader("refresh"));
+        refreshRepository.deleteByUsername(verifyResult[1]);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("리프레시토큰 삭제 완료");
+    }
 }
