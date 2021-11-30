@@ -27,6 +27,8 @@ public class User {
     private String password;
     @Column(name="role")
     private String role;
+    private String mailToken;
+    private boolean isMailCheck = false;
 
     @JsonManagedReference//순환참조 방어
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true) //cascadeType.persist 참조하는객체도 함께 영속성화
