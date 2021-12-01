@@ -30,7 +30,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final RefreshRepository refreshRepository;
-    private String username;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService, RefreshRepository refreshRepository){
         this.authenticationManager = authenticationManager;
@@ -49,7 +48,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             UsernamePasswordAuthenticationToken token =
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-            username = user.getUsername();
             Authentication authentication = authenticationManager.authenticate(token);
 
             return authentication;
@@ -89,7 +87,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        response.sendRedirect("/jwt/authentication?username="+username);
+        response.sendRedirect("/jwt/authentication");
     }
 
     private RefreshToken getRefreshToken(String tokenValue, String username){

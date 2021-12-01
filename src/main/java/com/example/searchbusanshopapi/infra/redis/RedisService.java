@@ -37,11 +37,12 @@ public class RedisService {
     }
 
     public void isBlockToken(String accessToken, String username) {
-        String blackToken = vop.get(username);
-        if(blackToken.equals(accessToken)){
+        String blockToken = vop.get(username);
+        if(blockToken == null) return;
+        if(blockToken.equals(accessToken)){
             throw new InvalidTokenException(Errorcode.INVALID_TOKEN,
                     "",
-                    blackToken);
+                    blockToken);
         }
     }
 }
