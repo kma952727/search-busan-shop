@@ -4,9 +4,8 @@ import com.example.searchbusanshopapi.infra.config.RedisConfig;
 import com.example.searchbusanshopapi.infra.exception.Errorcode;
 import com.example.searchbusanshopapi.infra.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
@@ -17,32 +16,30 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final static int TIME_OUT = 60;
-
     private final RedisConfig redisConfig;
     private RedisTemplate<String, String> template;
-    private ValueOperations<String, String> vop;
+    private SetOperations<String, String> sop;
 
     @PostConstruct
     public void init(){
         template = redisConfig.redisTemplate();
-        vop = template.opsForValue();
+        sop = template.opsForSet();
     }
 
-    public void insertAccessToken(String AccessToken, String username){
-
-        vop.set(username, AccessToken);
-        template.expire(username, TIME_OUT, TimeUnit.SECONDS);
-
+    public void insertAccessToken(String AccessToken){
+        sop.add("tokenSet",AccessToken);
     }
 
-    public void isBlockToken(String accessToken, String username) {
-        String blockToken = vop.get(username);
-        if(blockToken == null) return;
-        if(blockToken.equals(accessToken)){
+    public void isBlockToken(String accessToken) {
+        boolean blockToken = sop.isMember("tokenSet", accessToken);
+        if(blockToken){
             throw new InvalidTokenException(Errorcode.INVALID_TOKEN,
                     "",
-                    blockToken);
+                    accessToken);
         }
+    }
+
+    public void removeToken(String jwtHeader) {
+        sop.remove("tokenSet", jwtHeader);
     }
 }

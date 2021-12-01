@@ -78,13 +78,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String username = null;
         try {
             username = jwtService.verifyToken(jwtHeader);
-            redisService.isBlockToken(jwtHeader, username);
+            redisService.isBlockToken(jwtHeader);
         }catch (TokenExpiredException e){
             //3-1. 토큰을 검증하였으나 만료시간이 지났을경우, /jwt/authentication/refresh로 클라이언트에서 다시 호출
             e.printStackTrace();
             response.addHeader("token", jwtHeader);
             response.addHeader("success", "false");
             response.addHeader("cause", "토큰의 수명이 다했습니다.");
+            redisService.removeToken(jwtHeader);
             chain.doFilter(request, response);
             return;
         }catch (SignatureVerificationException e){
@@ -100,7 +101,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             e.printStackTrace();
             response.addHeader("token", jwtHeader);
             response.addHeader("success", "false");
-            response.addHeader("cause", "해당토큰은 일정시간동안 차단되었습니다. 다시 로그인해주세요.");
+            response.addHeader("cause", "해당토큰은 차단되었습니다. 다시 로그인해주세요.");
             chain.doFilter(request, response);
             return;
         }

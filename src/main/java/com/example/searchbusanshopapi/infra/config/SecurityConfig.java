@@ -1,4 +1,4 @@
-package com.example.searchbusanshopapi.infra.security;
+package com.example.searchbusanshopapi.infra.config;
 
 import com.example.searchbusanshopapi.infra.jwt.JwtAuthenticationFilter;
 import com.example.searchbusanshopapi.infra.jwt.JwtAuthorizationFilter;

@@ -8,6 +8,9 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 @Configuration
 public class RedisConfig {
 
