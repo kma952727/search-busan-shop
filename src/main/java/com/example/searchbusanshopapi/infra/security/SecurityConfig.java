@@ -3,6 +3,7 @@ package com.example.searchbusanshopapi.infra.security;
 import com.example.searchbusanshopapi.infra.jwt.JwtAuthenticationFilter;
 import com.example.searchbusanshopapi.infra.jwt.JwtAuthorizationFilter;
 import com.example.searchbusanshopapi.infra.jwt.JwtService;
+import com.example.searchbusanshopapi.infra.redis.RedisService;
 import com.example.searchbusanshopapi.user.repository.RefreshRepository;
 import com.example.searchbusanshopapi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final RefreshRepository refreshRepository;
+    private final RedisService redisService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -37,9 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);//세션사용을 막는다.
 
         http
-                .addFilterBefore(new JwtAuthenticationFilter(authenticationManager(), jwtService, refreshRepository),
+                .addFilterBefore(new JwtAuthenticationFilter(authenticationManager(),
+                                jwtService,
+                                refreshRepository),
                         UsernamePasswordAuthenticationFilter.class)
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, jwtService));
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(),
+                        userRepository,
+                        jwtService,
+                        redisService));
         http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/users", "/login")
@@ -55,12 +62,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated();
+
+        http.logout().disable();
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/jwt/authentication/refresh");
+                .antMatchers("/jwt/authentication/refresh", "/logout");
     }
 
     @Bean

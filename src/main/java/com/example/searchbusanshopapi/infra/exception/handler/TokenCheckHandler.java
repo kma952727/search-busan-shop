@@ -36,11 +36,9 @@ public class TokenCheckHandler implements HandlerInterceptor {
         if(response.getHeader("success") == null){
             return true;
         }
-        System.out.println("접근 경로 : " + request.getServletPath());
         if(blackFilter.contains(request.getServletPath())){
             return true;
         }
-
         String token = response.getHeader("token");
         if(token == null) {
             token = "토큰이 존재하지 않습니다.";
