@@ -75,7 +75,7 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(InvalidTokenException.class)
-    public final ResponseEntity handleAccessDeniedException(InvalidTokenException ex, WebRequest request) {
+    public final ResponseEntity handleInvalidTokenException(InvalidTokenException ex, WebRequest request) {
 
         ExceptionResponse exceptionResponse =
                 ExceptionResponse.builder().timestamp(new Date())
@@ -102,6 +102,25 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
                 .message("디비내에 이미 값이 있습니다.(유니크키)")
                 .statusDetail(ex.getErrorcode().toString())
                 .requestDetail(request.toString() + "/ " + ex.getDuplicateMessage()).build();
+        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 시큐리티 필터단에서 이용하고자하는 엔드포인트의 필요권한을 가지지 못할경우
+     * 호출됩니다.
+     * 경로 : CustomAccessDeniedHandler -> LoginExceptionController -> 현재
+     * @param ex
+     * @param request
+     * @return
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity handleAccessDenied(AccessDeniedException ex, WebRequest request){
+
+        ExceptionResponse exceptionResponse =
+                ExceptionResponse.builder().timestamp(new Date())
+                        .message("이용할수 없는 권한입니다.")
+                        .statusDetail(Errorcode.ACCESS_DINIED.toString())
+                        .requestDetail(request.toString() + " / " + ex.toString()).build();
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }

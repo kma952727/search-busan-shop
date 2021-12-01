@@ -11,10 +11,13 @@ import com.example.searchbusanshopapi.user.repository.RefreshRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.CascadeType;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 /**
@@ -103,5 +106,10 @@ public class LoginExceptionController {
         SecurityContextHolder.clearContext();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/denied")
+    public void accessDenied(@RequestParam String cause){
+        throw new AccessDeniedException(cause + "의 권한으로는 접근할수 없습니다.");
     }
 }

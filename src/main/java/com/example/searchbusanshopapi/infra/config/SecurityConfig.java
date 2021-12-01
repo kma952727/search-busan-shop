@@ -1,5 +1,6 @@
 package com.example.searchbusanshopapi.infra.config;
 
+import com.example.searchbusanshopapi.infra.exception.handler.CustomAccessDeniedHandler;
 import com.example.searchbusanshopapi.infra.jwt.JwtAuthenticationFilter;
 import com.example.searchbusanshopapi.infra.jwt.JwtAuthorizationFilter;
 import com.example.searchbusanshopapi.infra.jwt.JwtService;
@@ -43,18 +44,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 jwtService,
                                 refreshRepository),
                         UsernamePasswordAuthenticationFilter.class)
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(),
-                        userRepository,
-                        jwtService,
-                        redisService));
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, jwtService, redisService))
+                .exceptionHandling()
+                .accessDeniedHandler(new CustomAccessDeniedHandler());
         http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/users", "/login")
                 .permitAll()
                 .and()
                 .authorizeRequests()
-                .antMatchers( "/logout")
-                .hasRole("USER")
+                .antMatchers( "/users")
+                .hasRole("ADMIN")
                 .and()
                 .authorizeRequests()
                 .antMatchers( "/", "/swagger*/**","/v3/api-docs")

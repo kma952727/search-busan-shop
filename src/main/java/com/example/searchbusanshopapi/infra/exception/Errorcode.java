@@ -16,7 +16,7 @@ public enum Errorcode {
     NO_MATCHING_REQUEST_DATA_IN_DB(HttpStatus.BAD_REQUEST,"4"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "5"),
     DUPLICATED_KEY_IN_DB(HttpStatus.BAD_REQUEST, "6"),
-
+    ACCESS_DINIED(HttpStatus.FORBIDDEN, "7"),
     INVALID_PARAMETER_OR_BODY(HttpStatus.BAD_REQUEST ,"10");
 
     private HttpStatus httpStatus;
