@@ -14,6 +14,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
 
+/**
+ * 스프링영역, 시큐리티영역 전역적으로 생기는 예외를
+ * 처리하는 클래스입니다.
+ * 시큐리티영역은 로그인익셉션컨트롤러, 토큰체크핸들러, 커스텀액세스디나인핸들러를 타고 옵니다.
+ */
 @RestController
 @ControllerAdvice
 public class CustomValidateExceptionHandler extends ResponseEntityExceptionHandler {
@@ -32,6 +37,13 @@ public class CustomValidateExceptionHandler extends ResponseEntityExceptionHandl
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * 요청시 넘어오는 파라미터, 바디의 내용이
+     * 유효하지 않을시 사용합니다.
+     * @param ex
+     * @param request
+     * @return
+     */
     @ExceptionHandler(InValidRequestParameterException.class)
     public ResponseEntity handleUserJoinException(InValidRequestParameterException ex,
                                                   WebRequest request){
