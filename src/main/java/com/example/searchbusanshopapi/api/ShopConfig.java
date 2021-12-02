@@ -25,9 +25,11 @@ import java.net.URL;
 @Configuration
 public class ShopConfig {
 
+    //시크릿키
     @Value("${external.service-key}")
     public String SERVICE_KEY;
 
+    //요청api 주소
     private String BASE_URL = "http://apis.data.go.kr/6260000/GoodPriceStoreService/getGoodPriceStore?";
 
     private URL url = null;
@@ -50,6 +52,7 @@ public class ShopConfig {
         String appendUrl = urlBuild(shopDTO, pageNum).toString();
         urlBuilder.append(appendUrl);
         connect(urlBuilder);
+        //다음에 재사용시 builder내에 남아있는 파라미터값들을 지웁니다.
         urlBuilder.delete(208, urlBuilder.length());
 
         if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
@@ -81,9 +84,11 @@ public class ShopConfig {
         if(pageNum >= 1) {
             sb.append("&pageNo="+pageNum);
         }
+        //클라이언트가 검색옵션을 추가안한경우 페이지넘버만 추가한후 반환합니다.
         if(shopDTO == null) {
             return sb;
         }
+        //옵션추가로직
         if(shopDTO.getShopName() != null){
             sb.append("&sj="+shopDTO.getShopName());
         }

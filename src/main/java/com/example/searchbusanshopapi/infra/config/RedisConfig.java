@@ -11,6 +11,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * reids에대한 설정을 하며
+ * 원할때 사용할수있게 redisTemplate() @bean으로 설정해
+ * 주입받은뒤 사용할수있습니다.
+ */
 @Configuration
 public class RedisConfig {
 

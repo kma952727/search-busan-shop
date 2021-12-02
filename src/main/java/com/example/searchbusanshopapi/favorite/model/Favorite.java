@@ -30,10 +30,10 @@ public class Favorite {
     private String categori; //가게분류
     @Column(name = "img")
     private String img; //가게이미지
-    private String introduce;
-    private String phoneNumber;
+    private String introduce; //소개
+    private String phoneNumber; //번호
     @Column(unique = true)
-    private Long shopId;
+    private Long shopId; //UK
 
 
     @JsonBackReference//순환참조 방어
@@ -41,6 +41,7 @@ public class Favorite {
     @JoinColumn(name = "user_id", insertable = false, updatable = false) //readOnly
     private User user;
 
+    //builder
     public static class FavoriteBuilder {
 
         private String owner;

@@ -11,10 +11,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 비즈니스로직에 필요한 오브젝트간 변환작업을 넣었습니다.
+ */
 @Component
 public class ConvertConfig {
 
-    public List<Favorite> favoritesJSONToEntity(List<FavoriteDTO> favoritesDTO) throws JsonProcessingException {
+    //json list key
+    private final static String GET_GOOD_PRICE_STORE = "getGoodPriceStore";
+    //json list key
+    private final static String ITEM = "item";
+    //target data
+    private final static String OWNER = "mNm";
+    private final static String CATEGORI = "cn";
+    private final static String LOCALE = "locale";
+    private final static String SHOP_NAME = "sj";
+    private final static String IMG1 = "imgFile1";
+
+    /**
+     * DTO -> ENTITY로 변환합니다.
+     * @param favoritesDTO 클라이언트에서 요청한 데이터입니다.
+     * @return 매핑이 완료된 ENTITY
+     */
+    public List<Favorite> favoritesDTOToEntity(List<FavoriteDTO> favoritesDTO) {
         List<Favorite> favorites = new ArrayList<>();
         Favorite favorite;
         for(FavoriteDTO element : favoritesDTO){
@@ -39,8 +58,8 @@ public class ConvertConfig {
      * @return 자바오브젝트로 변환
      */
     public List<Favorite> jsonRestaurantToFavorites(JSONObject jsonObject){
-        JSONObject jsonMap =(JSONObject)jsonObject.get("getGoodPriceStore");
-        JSONArray jsonList = (JSONArray)jsonMap.get("item");
+        JSONObject jsonMap =(JSONObject)jsonObject.get(GET_GOOD_PRICE_STORE);
+        JSONArray jsonList = (JSONArray)jsonMap.get(ITEM);
 
         List<Favorite> favorites = new ArrayList<>();
         Favorite favorite = null;
@@ -48,12 +67,11 @@ public class ConvertConfig {
         for(Object element : jsonList) {
             HashMap<String, String> restaurntFiled = (HashMap<String, String>)element;
             favorite = new Favorite.FavoriteBuilder()
-                    .setOwner(restaurntFiled.get("mNm"))
-                    .setCategori(restaurntFiled.get("cn"))
-                    .setLocale(restaurntFiled.get("locale"))
-                    .setOwner(restaurntFiled.get("mNm"))
-                    .setShopName(restaurntFiled.get("sj"))
-                    .setImg(restaurntFiled.get("imgFile1"))
+                    .setOwner(restaurntFiled.get(OWNER))
+                    .setCategori(restaurntFiled.get(CATEGORI))
+                    .setLocale(restaurntFiled.get(LOCALE))
+                    .setShopName(restaurntFiled.get(SHOP_NAME))
+                    .setImg(restaurntFiled.get(IMG1))
                     .build();
             favorites.add(favorite);
         }

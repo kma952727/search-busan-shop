@@ -22,6 +22,12 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final UserRepository userRepository;
 
+    /**
+     * 랜덤값을 생성해 db에 넣은뒤 그대로 사용자메일에도
+     * 보냅니다.
+     * @param userId
+     * @throws MessagingException
+     */
     public void sendAuthenticationMail(Long userId) throws MessagingException {
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -33,7 +39,7 @@ public class MailService {
         try {
             MimeMessageHelper messageHelper =
                     new MimeMessageHelper(message, true, "UTF-8");
-
+            //현재 테스트중이여서 모두 작성자 본인의 메일을 사용하였습니다.
             messageHelper.setTo("kma952727@gmail.com");
             messageHelper.setFrom("kma952727@gmail.com");
             messageHelper.setSubject("부산가게에서 발송되었습니다.");
@@ -46,6 +52,13 @@ public class MailService {
 
     }
 
+    /**
+     * 링크 쿼리파라미터값에있는 토큰값과 db에 저장된 토큰값을 비교합니다.
+     * 일치할시 user메일체크여부를 true로 저장합니다.(가입시 default = false)
+     * @param userId
+     * @param mailToken
+     * @return
+     */
     public boolean checkAuthenticationMail(Long userId, String mailToken) {
         Boolean checkResult = userRepository.existsByMailTokenAndId(mailToken, userId);
         if(checkResult) {
@@ -56,6 +69,12 @@ public class MailService {
         return false;
     }
 
+    /**
+     * 보낼 html파일을 작성합니다.
+     * @param mailToken
+     * @param userId
+     * @return
+     */
     private String renderAuthenticationHTML(String mailToken, Long userId){
         StringBuilder html = new StringBuilder();
         html.append("<html>");

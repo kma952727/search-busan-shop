@@ -2,6 +2,7 @@ package com.example.searchbusanshopapi.infra.exception.handler;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.example.searchbusanshopapi.infra.exception.*;
+import com.fasterxml.jackson.core.io.JsonEOFException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -170,4 +171,5 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
                         .requestDetail(request.toString() + " / " + ex.toString()).build();
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+
 }

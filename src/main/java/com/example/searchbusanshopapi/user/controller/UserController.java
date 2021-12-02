@@ -24,6 +24,11 @@ import javax.validation.constraints.Positive;
 import java.security.InvalidParameterException;
 import java.util.List;
 
+
+/**
+ * 유저에 관한 CRUD의 모든내용들을 처리합니다.
+ *
+ */
 @RestController
 @RequiredArgsConstructor
 @Validated
@@ -32,6 +37,12 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
 
+    /**
+     * 서버에 저장된 모든 user를 출력합니다.
+     * ADMIN권한을 가진 이용자만 접근할수있습니다.
+     *
+     * @return
+     */
     @GetMapping("/users")
     public ResponseEntity findUsers(){
         List<User> users;
@@ -43,28 +54,44 @@ public class UserController {
         }
         return ResponseEntity.ok().body(users);
     }
+
+    /**
+     * 유저 1개를 찾습니다.
+     * @param userId 1이상의 값만 들어올수있습니다. @positive
+     * @return
+     */
     @GetMapping("/users/{userId}")
     public ResponseEntity<User> findUser(
             @Positive @PathVariable Long userId) {
-        System.out.println("파라미터 : " + userId);
         User user;
         try {
             user = userRepository.findById(userId).get();
         }catch (Exception e) {
+            //유저를 찾을수없다면 예외를 던집니다.
             e.printStackTrace();
             throw new UserNotFoundException(Errorcode.USER_NOT_FOUND_IN_DB, userId);
         }
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
+
+    /**
+     * 유저를 생성합니다.
+     * @param userDTO
+     * @param bindingResult
+     * @return
+     * @throws RegistedUsernameException
+     */
     @PostMapping("/users")
     public ResponseEntity joinUser(@Validated @RequestBody UserDTO userDTO, BindingResult bindingResult) throws RegistedUsernameException {
 
+        //username, password에 공백을 넣었을경우 들어갑니다.
         if(bindingResult.hasErrors()){
             throw new InValidRequestParameterException("입력항목에는 공백이 허용되지 않습니다.");
         }
         try {
             userService.joinUser(userDTO);
         } catch (RegistedUsernameException e) {
+            //이미 등록되어있는 username일경우 던집니다.
             e.printStackTrace();
             throw e;
         }
@@ -72,7 +99,7 @@ public class UserController {
     }
     /**
      * user삭제 + favorite데이터도 함께 삭제 됩니다.
-     * @param userId 삭제할 식별자
+     * @param userId 삭제할 식별자(최소 1이상)
      * @return
      * @throws Exception 삭제하고자하는 아이디가 없을때
      */
@@ -86,6 +113,14 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 유저를 업데이트합니다.
+     * @param userId 업데이트할 식별자(최소 1이상)
+     * @param userDTO 수정할 내용입니다.(공백을 허용하지 않습니다.)
+     * @param bindingResult
+     * @return
+     */
     @PutMapping("/users/{userId}")
     public ResponseEntity updateUser(@Positive @PathVariable Long userId,
                                      @Validated @RequestBody UserDTO userDTO,
