@@ -2,6 +2,7 @@ package com.example.searchbusanshopapi.infra.config;
 
 import com.example.searchbusanshopapi.infra.exception.handler.TokenCheckHandler;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -20,4 +21,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/swagger*/**");
     }
+
 }
