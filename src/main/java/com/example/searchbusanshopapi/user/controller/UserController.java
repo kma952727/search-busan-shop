@@ -8,6 +8,8 @@ import com.example.searchbusanshopapi.user.dto.UserDTO;
 import com.example.searchbusanshopapi.user.model.User;
 import com.example.searchbusanshopapi.user.repository.UserRepository;
 import com.example.searchbusanshopapi.user.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,7 @@ import java.util.List;
  * 유저에 관한 CRUD의 모든내용들을 처리합니다.
  *
  */
+@Api(description = "유저에관한 CRUD을 제공합니다.")
 @RestController
 @RequiredArgsConstructor
 @Validated
@@ -43,6 +46,7 @@ public class UserController {
      *
      * @return
      */
+    @ApiOperation("모든 유저 조회")
     @GetMapping("/users")
     public ResponseEntity findUsers(){
         List<User> users;
@@ -60,6 +64,7 @@ public class UserController {
      * @param userId 1이상의 값만 들어올수있습니다. @positive
      * @return
      */
+    @ApiOperation(value = "유저 조회(id)")
     @GetMapping("/users/{userId}")
     public ResponseEntity<User> findUser(
             @Positive @PathVariable Long userId) {
@@ -81,6 +86,7 @@ public class UserController {
      * @return
      * @throws RegistedUsernameException
      */
+    @ApiOperation(value = "유저 생성")
     @PostMapping("/users")
     public ResponseEntity joinUser(@Validated @RequestBody UserDTO userDTO, BindingResult bindingResult) throws RegistedUsernameException {
 
@@ -103,6 +109,7 @@ public class UserController {
      * @return
      * @throws Exception 삭제하고자하는 아이디가 없을때
      */
+    @ApiOperation(value = "유저 삭제")
     @DeleteMapping("/users/{userId}")
     public ResponseEntity deleteUser(@Positive @PathVariable Long userId) {
         try{
@@ -121,6 +128,7 @@ public class UserController {
      * @param bindingResult
      * @return
      */
+    @ApiOperation(value = "유저 수정")
     @PutMapping("/users/{userId}")
     public ResponseEntity updateUser(@Positive @PathVariable Long userId,
                                      @Validated @RequestBody UserDTO userDTO,

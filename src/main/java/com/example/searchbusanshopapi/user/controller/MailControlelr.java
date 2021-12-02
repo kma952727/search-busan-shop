@@ -1,6 +1,8 @@
 package com.example.searchbusanshopapi.user.controller;
 
 import com.example.searchbusanshopapi.user.service.MailService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 
+@Api(description = "메일을 활용한 인증기능을 제공합니다.")
 @RestController
 @RequiredArgsConstructor
 public class MailControlelr {
@@ -20,6 +23,7 @@ public class MailControlelr {
      * @return
      * @throws MessagingException
      */
+    @ApiOperation(value = "인증메일 발송")
     @PostMapping("/users/{userId}/mail/authentication")
     public ResponseEntity sendAuthenticationMail(@PathVariable Long userId) throws MessagingException {
         try {
@@ -38,6 +42,7 @@ public class MailControlelr {
      * @param mailToken
      * @return
      */
+    @ApiOperation(value = "인증메일 토큰 검사")
     @GetMapping("/users/{userId}/mail/authentication")
     public ResponseEntity checkAuthenticationMail(@PathVariable Long userId,
                                                   @RequestParam String mailToken){

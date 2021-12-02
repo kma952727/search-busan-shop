@@ -2,6 +2,8 @@ package com.example.searchbusanshopapi.shop.controller;
 
 import com.example.searchbusanshopapi.api.ShopConfig;
 import com.example.searchbusanshopapi.shop.dto.ShopDTO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.hateoas.EntityModel;
@@ -16,6 +18,7 @@ import javax.validation.constraints.Positive;
  * 클라이언트가 가게리스트를 볼수있는기능을
  * 제공합니다.
  */
+@Api(description = "openApi로의 호출을 담당합니다.")
 @Validated
 @RestController
 @AllArgsConstructor
@@ -29,6 +32,7 @@ public class ShopController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "openApi를 통해 모든가게 출력")
     @GetMapping("/shops")
     public ResponseEntity searchShops(
             @RequestBody(required = false) ShopDTO shopDTO
@@ -44,6 +48,7 @@ public class ShopController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "openApi를 통해 가게 출력(페이징)")
     @GetMapping("/shops/{pageNum}")
     public ResponseEntity searchShops(
             @PathVariable @Positive Integer pageNum,

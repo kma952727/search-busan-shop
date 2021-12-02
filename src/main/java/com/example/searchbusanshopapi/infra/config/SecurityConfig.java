@@ -67,10 +67,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasRole("ADMIN")
                 .and()
                 //swagger 허용
-                .authorizeRequests()
-                .antMatchers( "/swagger*/**","/v3/api-docs")
-                .permitAll()
-                .and()
+//                .authorizeRequests()
+//                .antMatchers( "/swagger*/**","/v2/api-docs")
+//                .permitAll()
+//                .and()
                 //그외 모든요청은 인증필요(사이트마다 기획에 따라서 permitAll()로 변경가능)
                 .authorizeRequests()
                 .anyRequest().authenticated();
@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         //기록 : webSecurity와의 차이점 공부해야함
         web.ignoring()
-                .antMatchers("/jwt/authentication/refresh", "/logout");
+                .antMatchers("/jwt/authentication/refresh", "/logout","/swagger*/**","/v2/api-docs");
     }
 
 

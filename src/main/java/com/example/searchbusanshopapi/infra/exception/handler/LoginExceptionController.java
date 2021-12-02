@@ -8,12 +8,15 @@ import com.example.searchbusanshopapi.infra.jwt.JwtService;
 import com.example.searchbusanshopapi.infra.redis.RedisService;
 import com.example.searchbusanshopapi.user.model.RefreshToken;
 import com.example.searchbusanshopapi.user.repository.RefreshRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -25,6 +28,8 @@ import javax.transaction.Transactional;
  * 기능을 처리하는 클래스입니다.
  *
  */
+
+@Api(description = "액세스토큰 재발급, 로그아웃기능을 담당합니다.")
 @Transactional
 @RestController
 @RequiredArgsConstructor
@@ -42,6 +47,7 @@ public class LoginExceptionController {
      * JwtAuthenticationFilter.class의 unsuccessfulAuthentication()메서드에서
      * 맵핑된 url로 리다이렉트하게 설정하였습니다.
      */
+    @ApiIgnore
     @GetMapping("/jwt/authentication")
     public void noAuthentication(){
         throw new FailAuthenticationException(Errorcode.NO_MATCHING_AUTHENTICATION_IN_DB);
@@ -55,6 +61,7 @@ public class LoginExceptionController {
      * @param request 리프레쉬토큰, 엑세스토큰을 가지고옵니다.
      * @return 액세스토큰 발급
      */
+    @ApiOperation(value = "리프레시토큰 검증, 액세스토큰 재발급을 합니다.")
     @Transactional(rollbackOn = Exception.class)
     @PostMapping("/jwt/authentication/refresh")
     public ResponseEntity refreshBecauseExpired(HttpServletRequest request){
@@ -95,6 +102,7 @@ public class LoginExceptionController {
      * @param request 해당 파라미터에서 엑세스토큰을 가져옵니다.
      * @return 없음
      */
+    @ApiOperation(value = "로그아웃기능입니다.")
     @PostMapping("/logout")
     public ResponseEntity logout(HttpServletRequest request) {
         String AccessToken = request.getHeader(ACCESS_TOKEN_HEADER);
@@ -105,7 +113,7 @@ public class LoginExceptionController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
+    @ApiIgnore
     @GetMapping("/denied")
     public void accessDenied(@RequestParam String cause){
         throw new AccessDeniedException(cause + "의 권한으로는 접근할수 없습니다.");

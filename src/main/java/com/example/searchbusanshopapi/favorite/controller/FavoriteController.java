@@ -9,6 +9,8 @@ import com.example.searchbusanshopapi.infra.exception.Errorcode;
 import com.example.searchbusanshopapi.infra.exception.UserNotFoundException;
 import com.example.searchbusanshopapi.shop.dto.ShopDTO;
 import com.example.searchbusanshopapi.user.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+@Api(description = "가게리스트의 즐겨찾기 기능을 담당합니다.")
 @RestController
 @RequiredArgsConstructor
 @Validated
@@ -37,6 +40,7 @@ public class FavoriteController {
      * @param favoriteIdSet 삭제하고자하는 식별자를 가지고옵니다.
      * @return
      */
+    @ApiOperation(value = "가게즐겨찾기 목록삭제")
     @DeleteMapping("/users/{usersId}/favorites")
     public ResponseEntity deleteFavorite(@Validated @PathVariable @Positive Long usersId,
                                          @RequestBody(required = false) @Validated @NotNull Set<Long> favoriteIdSet){
@@ -61,6 +65,7 @@ public class FavoriteController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "가게 즐겨찾기 추가")
     @PostMapping("/users/{userId}/favorites")
     public ResponseEntity saveFavorite(@RequestBody(required = false) List<FavoriteDTO> favoritesDTO,
                                        @Validated @PathVariable @Positive Long userId) throws Exception{
