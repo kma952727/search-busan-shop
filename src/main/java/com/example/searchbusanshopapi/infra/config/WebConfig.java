@@ -8,8 +8,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    /**
+     *
+     * @param registry
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        //모든요청이 필터체인이후 거치게 됨
         registry.addInterceptor(new TokenCheckHandler())
                 .order(1)
                 .addPathPatterns("/**")
